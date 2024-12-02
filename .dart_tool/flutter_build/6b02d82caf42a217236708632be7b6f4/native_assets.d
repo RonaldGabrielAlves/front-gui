@@ -1,0 +1,1 @@
+ C:\\src\\gui\\teste\\wda-bookstore-flutter\\.dart_tool\\flutter_build\\6b02d82caf42a217236708632be7b6f4\\native_assets.yaml: 

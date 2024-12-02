@@ -1,0 +1,13 @@
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/icudtl.dat
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/flutter_windows.dll
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/flutter_assets/AssetManifest.bin
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/flutter_assets/AssetManifest.json
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/flutter_assets/FontManifest.json
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/flutter_assets/kernel_blob.bin
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/flutter_assets/lib/images/item.jpeg
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/flutter_assets/lib/images/logo_unifor.png
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/flutter_assets/lib/images/logo_unifor_pequena.png
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/flutter_assets/NOTICES.Z
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/flutter_assets/shaders/ink_sparkle.frag

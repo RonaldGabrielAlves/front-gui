@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            Expanded(child: CustomListView2(),),
+            Expanded(child: ListViewItens(),),
           ],
         ),
       ),

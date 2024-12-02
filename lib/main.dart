@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:wdalivraia/services/clientes_services.dart';
 import 'package:wdalivraia/views/register_page.dart';
 import 'package:wdalivraia/widget/bottom_sheet_login_widget.dart';
+import 'package:get_it/get_it.dart';
+import 'package:wdalivraia/services/itemlost_services.dart';
 
-void main() {
+final getIt = GetIt.instance;
+
+void configureDependencies() {
+  getIt.registerSingleton<ItemLostService>(ItemLostService());
+  getIt.registerSingleton<ClientesService>(ClientesService());
+}
+
+void main() async{
+  configureDependencies();
   runApp(const MyApp());
 }
 

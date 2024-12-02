@@ -8,3 +8,6 @@ C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/flutter/CMakeFiles/INST
 C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/CMakeFiles/wdalivraia.dir
 C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/CMakeFiles/INSTALL.dir
 C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/CMakeFiles/ALL_BUILD.dir
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/plugins/file_selector_windows/CMakeFiles/file_selector_windows_plugin.dir
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/plugins/file_selector_windows/CMakeFiles/INSTALL.dir
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/plugins/file_selector_windows/CMakeFiles/ALL_BUILD.dir

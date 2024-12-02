@@ -1,89 +1,183 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:wdalivraia/services/itemlost_services.dart';
-import 'dart:convert';
-
+import '../main.dart';
 import '../models/notes_itemlost.dart';
 
-class CustomListView2 extends StatefulWidget {
-
+class ListViewItens extends StatefulWidget {
   @override
-  State<CustomListView2> createState() => _CustomListView2State();
+  State<ListViewItens> createState() => _ListViewItensState();
 }
 
-class _CustomListView2State extends State<CustomListView2> {
+class _ListViewItensState extends State<ListViewItens> {
+  final ItemLostService _itemLostService = getIt<ItemLostService>();
 
+  List<NotesItemLost> _items = [];
+  List<bool> _expanded = [];
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchItems();
+  }
+
+  void _fetchItems() async {
+    final response = await _itemLostService.getNotesList();
+    if (response.error == false && response.data != null) {
+      setState(() {
+        _items = response.data!;
+        _expanded = List<bool>.filled(_items.length, false);
+      });
+    } else {
+      setState(() {
+        _errorMessage = response.errorMessage ?? 'Erro desconhecido';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 10,
-      itemBuilder: (context, index) {
-      return Padding(
-        padding: EdgeInsets.all(2),
-        child: Card(
-          child: Padding(
-            padding: EdgeInsets.all(5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'lib/images/item.jpeg',
-                  width: MediaQuery.of(context).size.width * 0.30,
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(left:4),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text("Garrafa vermelha", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                          Icon(Icons.favorite_border, size: 25, color: Colors.grey[400],)
-                        ],
-                      ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text("Garrafa vermelha passo sem nome", style: TextStyle(fontSize: 14, color: Colors.grey),),
-                          ],
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              side: BorderSide(
-                                color: Colors.grey, // Cor da borda
-                                width: 2, // Espessura da borda
-                              ),
-                            ),
-                            foregroundColor: Colors.black,
-                            elevation: 0,
-                          ),
-                          onPressed: (){},
-                          child: Text(
-                            "Mais informaçoes",
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.black
-                            ),
-                          ),
-                        ),
-                    ],),
-                  ),
-                ),
-              ],
-            ),
-          ),
+    if (_errorMessage != null) {
+      return Center(
+        child: Text(
+          _errorMessage!,
+          style: TextStyle(color: Colors.red, fontSize: 16),
         ),
       );
+    }
+
+    return _items.isEmpty
+        ? Center(child: CircularProgressIndicator())
+        : ListView.builder(
+      itemCount: _items.length,
+      itemBuilder: (context, index) {
+        final item = _items[index];
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Card(
+            elevation: 4,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            if (item.image.isNotEmpty) _buildImage(item.image),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Tooltip(
+                                    message: item.name1,
+                                    child: Text(
+                                      "${item.name1}",
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                  Tooltip(
+                                    message: item.color,
+                                    child: Text(
+                                      "Cor: ${item.color}",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                  Tooltip(
+                                    message: item.other,
+                                    child: Text(
+                                      "Outro: ${item.other}",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          _expanded[index]
+                              ? Icons.keyboard_arrow_up
+                              : Icons.keyboard_arrow_down,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _expanded[index] = !_expanded[index];
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  if (_expanded[index]) ...[
+                    const SizedBox(height: 8),
+                    if (item.with_label) _buildInfoRow("Com etiqueta"),
+                    if (item.metal) _buildInfoRow("Metálico"),
+                    if (item.colored) _buildInfoRow("Colorido"),
+                    if (item.broken) _buildInfoRow("Quebrado"),
+                    if (item.dirty) _buildInfoRow("Sujo"),
+                    if (item.opaque) _buildInfoRow("Opaco"),
+                    if (item.fragile) _buildInfoRow("Frágil"),
+                    if (item.missing_parts)
+                      _buildInfoRow("Com peças faltando"),
+                    if (item.heavy) _buildInfoRow("Pesado"),
+                    if (item.with_pockets) _buildInfoRow("Com bolsos"),
+                    if (item.with_buttons) _buildInfoRow("Com botões"),
+                    const SizedBox(height: 8),
+                    Text("Data: ${item.date}"),
+                    Text("Usuário: ${item.name}"),
+                  ]
+                ],
+              ),
+            ),
+          ),
+        );
       },
+    );
+  }
+
+  Widget _buildImage(String base64Image) {
+    final base64Data = base64Image.contains(",")
+        ? base64Image.split(",")[1]
+        : base64Image;
+
+    Uint8List imageBytes = base64Decode(base64Data);
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(5),
+      child: Image.memory(
+        imageBytes,
+        width: MediaQuery.of(context).size.width * 0.2,
+        height: MediaQuery.of(context).size.width * 0.2,
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Row(
+        children: [
+          Icon(Icons.check, color: Colors.green, size: 20),
+          const SizedBox(width: 8),
+          Text(label),
+        ],
+      ),
     );
   }
 }

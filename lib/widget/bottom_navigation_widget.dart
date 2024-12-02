@@ -57,10 +57,7 @@ class _StaticBottomNavigationState extends State<StaticBottomNavigation> {
             buildNavItem(
                 icon: Icons.notifications,
                 isActive: widget.activeIcon == 3,
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Notifications(userId: userId ?? 0,)),
-                ),
+                onTap: () {},
             ),
             buildNavItem(
               icon: Icons.person,

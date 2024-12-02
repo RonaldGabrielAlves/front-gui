@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wdalivraia/models/notes_users.dart';
 import 'package:wdalivraia/services/clientes_services.dart';
 import 'package:wdalivraia/views/about_app.dart';
+import 'package:wdalivraia/views/edit_page.dart';
 import 'package:wdalivraia/views/terms_and_conditions.dart';
 import '../widget/bottom_navigation_widget.dart';
 import '../widget/listview_itemlost_widget.dart';
@@ -142,7 +143,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     SizedBox(height: 10,),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => EditPage(userId: userId,),
+                        ));
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,

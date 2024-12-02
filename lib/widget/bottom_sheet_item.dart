@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
 import 'package:wdalivraia/main.dart';
+import 'package:wdalivraia/models/notes_itemlost.dart';
 import 'package:wdalivraia/widget/input_label_widget.dart';
 import 'package:wdalivraia/widget/submit_button_widget.dart';
-import 'package:wdalivraia/models/notes_add_users.dart';
 
 import '../models/notes_add_itemlost.dart';
 import '../models/notes_users.dart';
@@ -48,10 +52,11 @@ class _BottomSheetItemState extends State<BottomSheetItem> {
   void dispose() {
     super.dispose();
   }
-  ItemLostService get service => GetIt.I<ItemLostService>();
+  //ItemLostService get service => GetIt.I<ItemLostService>();
+  final service = GetIt.I.call<ItemLostService>();
 
   String? errorMessage;
-  NotesClientes? note;
+  NotesItemLost? note;
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController colorController = TextEditingController();
@@ -78,7 +83,7 @@ class _BottomSheetItemState extends State<BottomSheetItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: widget.screenHeight * 0.90,
+      height: widget.screenHeight * 1,
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -97,8 +102,8 @@ class _BottomSheetItemState extends State<BottomSheetItem> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 20,),
-                InputLabelWidget(type: 3, controller: nameController, maxLength: 100, minLength: 5, placeholder: "name...", label: "Nome"),
-                InputLabelWidget(type: 3, controller: colorController, maxLength: 50, minLength: 5, placeholder: "Cor", label: "Cor"),
+                InputLabelWidget(type: 3, controller: nameController, maxLength: 45, minLength: 1, placeholder: "name...", label: "Nome"),
+                InputLabelWidget(type: 3, controller: colorController, maxLength: 45, minLength: 1, placeholder: "Cor", label: "Cor"),
                 _buildCheckboxRow("Etiqueta", with_label, (value) => setState(() => with_label = value)),
                 _buildCheckboxRow("Metálico", metal, (value) => setState(() => metal = value)),
                 _buildCheckboxRow("Colorido", colored, (value) => setState(() => colored = value)),
@@ -110,9 +115,51 @@ class _BottomSheetItemState extends State<BottomSheetItem> {
                 _buildCheckboxRow("Pesado", heavy, (value) => setState(() => heavy = value)),
                 _buildCheckboxRow("Com bolsos", with_pockets, (value) => setState(() => with_pockets = value)),
                 _buildCheckboxRow("Botão", with_buttons, (value) => setState(() => with_buttons = value)),
-                InputLabelWidget(type: 3, controller: otherController, maxLength: 50, minLength: 6, placeholder: "outro", label: "outro"),
-                InputLabelWidget(type: 3, controller: dateController, maxLength: 50, minLength: 6, placeholder: "Data", label: "Data"),
-                InputLabelWidget(type: 3, controller: imageController, maxLength: 50, minLength: 6, placeholder: "Imagem", label: "Imagem"),
+                InputLabelWidget(type: 3, controller: otherController, maxLength: 100, minLength: 1, placeholder: "outro", label: "outro"),
+                GestureDetector(
+                  onTap: () => _selectDate(context),
+                  child: AbsorbPointer(
+                    child: InputLabelWidget(
+                      type: 3,
+                      controller: dateController,
+                      maxLength: 50,
+                      minLength: 6,
+                      placeholder: "Selecione a data",
+                      label: "Data",
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: Container(
+                    height: 150,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: imageController.text.isNotEmpty
+                        ? ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.memory(
+                        base64Decode(imageController.text.split(',')[1]),
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                        : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.camera_alt,
+                              size: 40, color: Colors.grey),
+                          SizedBox(height: 10),
+                          Text("Adicionar Imagem",
+                              style: TextStyle(color: Colors.grey)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 SizedBox(height: 20,),
                 SubmitButtonWidget(
                   onTap: () async {
@@ -138,13 +185,10 @@ class _BottomSheetItemState extends State<BottomSheetItem> {
                       );
                       print('Dados enviados: ${note.toJson()}');
                       final result = await service.createNote(note);
-                      //final titleModal = "Info";
                       final textError = result.error!
-                          ? (result.errorMessage ??
-                          'Ocorreu um erro desconhecido')
-                          : 'Usuário criado!';
+                          ? (result.errorMessage ?? 'Ocorreu um erro desconhecido')
+                          : 'Item Adicionado!';
 
-                      // Use o contexto do Builder widget
                       final snackBar = SnackBar(
                         content: Text(textError),
                         action: SnackBarAction(
@@ -152,9 +196,36 @@ class _BottomSheetItemState extends State<BottomSheetItem> {
                           onPressed: () {},
                         ),
                       );
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(snackBar);
-                    };
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                      // Após salvar, limpar os campos e checkboxes
+                      nameController.clear();
+                      colorController.clear();
+                      otherController.clear();
+                      dateController.clear();
+                      imageController.clear();
+                      setState(() {
+                        with_label = false;
+                        metal = false;
+                        colored = false;
+                        broken = false;
+                        dirty = false;
+                        opaque = false;
+                        fragile = false;
+                        missing_parts = false;
+                        heavy = false;
+                        with_pockets = false;
+                        with_buttons = false;
+                      });
+
+                      // Navegar para a próxima página
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(userId: userId),
+                        ),
+                      );
+                    }
                   },
                   placeholder: "SALVAR",
                 ),
@@ -165,6 +236,32 @@ class _BottomSheetItemState extends State<BottomSheetItem> {
         ),
       ),
     );
+  }
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2124),
+    );
+    if (picked != null) {
+      setState(() {
+        dateController.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
+    }
+  }
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final bytes = await File(pickedFile.path).readAsBytes();
+      final base64Image = "data:image/jpeg;base64,${base64Encode(bytes)}";
+
+      setState(() {
+        imageController.text = base64Image;
+      });
+    }
   }
   Widget _buildCheckboxRow(String label, bool value, ValueChanged<bool> onChanged) {
     return Row(
@@ -178,7 +275,7 @@ class _BottomSheetItemState extends State<BottomSheetItem> {
             onChanged(newValue ?? false);
           },
         ),
-        Text('Status: ${value ? "Sim" : "Não"}'),
+        Text('${value ? "Sim" : "Não"}'),
       ],
     );
   }

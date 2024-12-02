@@ -140,6 +140,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
+    <ProjectReference Include="C:\src\gui\teste\wda-bookstore-flutter\build\windows\x64\plugins\file_selector_windows\file_selector_windows_plugin.vcxproj">
+      <Project>{40C15172-06D8-3561-95D4-FC2D65C7AD1B}</Project>
+      <Name>file_selector_windows_plugin</Name>
+    </ProjectReference>
     <ProjectReference Include="C:\src\gui\teste\wda-bookstore-flutter\build\windows\x64\flutter\flutter_wrapper_app.vcxproj">
       <Project>{832595E0-F37A-3729-B654-D000179054D3}</Project>
       <Name>flutter_wrapper_app</Name>

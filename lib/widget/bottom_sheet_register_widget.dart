@@ -22,7 +22,18 @@ class BottomSheetRegister extends StatefulWidget {
 }
 
 class _BottomSheetRegisterState extends State<BottomSheetRegister> {
-  ClientesService get service => GetIt.I<ClientesService>();
+
+  void initState() {
+    super.initState();
+    typeValue = false;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  final service = GetIt.I.call<ClientesService>();
 
   String? errorMessage;
   NotesClientes? note;
@@ -132,8 +143,8 @@ class _BottomSheetRegisterState extends State<BottomSheetRegister> {
                 ),
                 SizedBox(height: 20,),
                 InputLabelWidget(type: 3, controller: nameController, maxLength: 100, minLength: 5, placeholder: "name...", label: "Nome"),
-                InputLabelWidget(type: 1, controller: emailController, maxLength: 50, minLength: 5, placeholder: "example@gmail.com", label: "Email"),
-                InputLabelWidget(type: 2, controller: passwordController, maxLength: 50, minLength: 6, placeholder: "password", label: "Senha"),
+                InputLabelWidget(type: 1, controller: emailController, maxLength: 100, minLength: 5, placeholder: "example@gmail.com", label: "Email"),
+                InputLabelWidget(type: 2, controller: passwordController, maxLength: 45, minLength: 6, placeholder: "password", label: "Senha"),
                 SizedBox(height: 20,),
                 SubmitButtonWidget(
                   onTap: () async {
@@ -149,7 +160,6 @@ class _BottomSheetRegisterState extends State<BottomSheetRegister> {
                       // Chama o serviço para criar o usuário
                       final result = await service.createNote(note);
 
-                      // Verifica o resultado da operação
                       if (result.error!) {
                         // Se houve erro, exibe a mensagem de erro
                         final textError = result.errorMessage ?? 'Ocorreu um erro desconhecido';
@@ -162,20 +172,47 @@ class _BottomSheetRegisterState extends State<BottomSheetRegister> {
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       } else {
-                        // Se a operação foi bem-sucedida, exibe a mensagem de sucesso
-                        final snackBar = SnackBar(
-                          content: const Text('Usuário criado com sucesso!'),
-                          action: SnackBarAction(
-                            label: 'Fechar',
-                            onPressed: () {},
-                          ),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        // Se a operação foi bem-sucedida, buscar o usuário pelo email
+                        final email = emailController.text.trim();
+                        final getUserResult = await service.getNoteEmail(email);
 
-                        // Navega para a homepage
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) => HomePage(userId: 1)),
-                        );
+                        if (getUserResult.error!) {
+                          // Se houver erro ao buscar o usuário, exibe a mensagem de erro
+                          final textError = getUserResult.errorMessage ?? 'Erro ao buscar usuário criado';
+                          final snackBar = SnackBar(
+                            content: Text(textError),
+                            action: SnackBarAction(
+                              label: 'Fechar',
+                              onPressed: () {},
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        } else {
+                          // Obtem o ID do usuário e navega para a HomePage
+                          final userId = getUserResult.data!.id; // Substitua `id` pelo campo correto retornado no modelo
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => HomePage(userId: userId)),
+                          );
+
+                          // Limpa os campos
+                          nameController.clear();
+                          emailController.clear();
+                          passwordController.clear();
+                          setState(() {
+                            typeValue = false;
+                            selectedType = -1;
+                          });
+
+                          // Exibe mensagem de sucesso
+                          final snackBar = SnackBar(
+                            content: const Text('Usuário criado com sucesso!'),
+                            action: SnackBarAction(
+                              label: 'Fechar',
+                              onPressed: () {},
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
                       }
                     }
                   },

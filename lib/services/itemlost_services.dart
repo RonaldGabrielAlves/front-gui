@@ -11,18 +11,33 @@ class ItemLostService {
 
   Future<APIResponse<List<NotesItemLost>>> getNotesList() {
     return http.get(Uri.parse(API + '/api/ItemLost')).then((data) {
+      print('Resposta da API (status): ${data.statusCode}');
+      print('Resposta da API (body): ${data.body}');
       if (data.statusCode == 200) {
-        final jsonData = json.decode(data.body);
-        final notes = <NotesItemLost>[];
-        for (var item in jsonData) {
-          notes.add(NotesItemLost.fromJson(item));
+        try {
+          final jsonData = json.decode(data.body);
+          if (jsonData is List) {
+            final notes = jsonData
+                .map((item) => NotesItemLost.fromJson(item))
+                .toList();
+            return APIResponse<List<NotesItemLost>>(data: notes);
+          } else {
+            return APIResponse<List<NotesItemLost>>(
+                error: true, errorMessage: 'Formato de dados inválido');
+          }
+        } catch (e) {
+          print('Erro ao decodificar JSON: $e');
+          return APIResponse<List<NotesItemLost>>(
+              error: true, errorMessage: 'Erro ao processar dados da API');
         }
-        return APIResponse<List<NotesItemLost>>(data: notes);
       }
       return APIResponse<List<NotesItemLost>>(
-          error: true, errorMessage: 'Ocorreu um erro!');
-    }).catchError((_) => APIResponse<List<NotesItemLost>>(
-        error: true, errorMessage: 'Ocorreu um erro!'));
+          error: true, errorMessage: 'Erro HTTP: ${data.statusCode}');
+    }).catchError((error) {
+      print('Erro ao conectar à API: $error');
+      return APIResponse<List<NotesItemLost>>(
+          error: true, errorMessage: 'Erro de conexão com a API');
+    });
   }
 
   Future<APIResponse<NotesLivrosId>> getNote(int id) {

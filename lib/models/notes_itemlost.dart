@@ -1,6 +1,7 @@
 class NotesItemLost {
   int id;
   String name;
+  String name1;
   String color;
   bool with_label;
   bool metal;
@@ -21,6 +22,7 @@ class NotesItemLost {
   NotesItemLost(
       { required this.id,
         required this.name,
+        required this.name1,
         required this.color,
         required this.with_label,
         required this.metal,
@@ -39,24 +41,36 @@ class NotesItemLost {
         required this.image});
 
   factory NotesItemLost.fromJson(Map<String, dynamic> item) {
+    bool parseBool(dynamic value) {
+      if (value is int) {
+        return value == 1;
+      } else if (value is bool) {
+        return value;
+      }
+      return false; // valor padrão para casos não previstos
+    }
+
     return NotesItemLost(
-        id: item['id'],
-        name: item['name'],
-        color: item['color'],
-        with_label: item['with_label'],
-        metal: item['metal'],
-        colored: item['colored'],
-        broken: item['broken'],
-        dirty: item['dirty'],
-        opaque: item['opaque'],
-        fragile: item['fragile'],
-        missing_parts: item['missing_parts'],
-        heavy: item['heavy'],
-        with_pockets: item['with_pockets'],
-        with_buttons: item['with_buttons'],
-        other: item['other'],
-        id_user: item['id_user'],
-        date: item['date'],
-        image: item['image']);
+      id: item['id'],
+      name: item['name'],
+      name1: item['name1'],
+      color: item['color'],
+      with_label: parseBool(item['with_label']),
+      metal: parseBool(item['metal']),
+      colored: parseBool(item['colored']),
+      broken: parseBool(item['broken']),
+      dirty: parseBool(item['dirty']),
+      opaque: parseBool(item['opaque']),
+      fragile: parseBool(item['fragile']),
+      missing_parts: parseBool(item['missing_parts']),
+      heavy: parseBool(item['heavy']),
+      with_pockets: parseBool(item['with_pockets']),
+      with_buttons: parseBool(item['with_buttons']),
+      other: item['other'],
+      id_user: item['id_user'],
+      date: item['date'],
+      image: item['image'],
+    );
   }
+
 }

@@ -1,5 +1,6 @@
 C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/icudtl.dat
 C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/flutter_windows.dll
+C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/file_selector_windows_plugin.dll
 C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/flutter_assets/AssetManifest.bin
 C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/flutter_assets/AssetManifest.json
 C:/src/gui/teste/wda-bookstore-flutter/build/windows/x64/runner/Debug/data/flutter_assets/FontManifest.json

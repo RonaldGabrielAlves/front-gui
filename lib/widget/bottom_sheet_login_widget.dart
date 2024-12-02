@@ -1,104 +1,3 @@
-/*
-import 'package:flutter/material.dart';
-import 'package:wdalivraia/views/home_page.dart';
-import 'package:wdalivraia/views/register_page.dart';
-import 'package:wdalivraia/widget/input_label_widget.dart';
-import 'package:wdalivraia/widget/submit_button_widget.dart';
-
-class BottomSheetLogin extends StatefulWidget {
-  final double screenHeight;
-
-  const BottomSheetLogin({
-    Key? key,
-    required this.screenHeight,
-  }) : super(key: key);
-
-  @override
-  State<BottomSheetLogin> createState() => _BottomSheetLoginState();
-}
-
-class _BottomSheetLoginState extends State<BottomSheetLogin> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: widget.screenHeight * 0.45,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 25, left: 45, right: 45, bottom: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InputLabelWidget(type: 1, controller: emailController, maxLength: 50, minLength: 5, placeholder: "example@gmail.com", label: "Email"),
-              InputLabelWidget(type: 2, controller: passwordController, maxLength: 50, minLength: 6, placeholder: "password", label: "Senha"),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text("Lembrar",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black, fontSize: 17,),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                    },
-                    child: Text("Esqueceu a senha",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.blue, fontSize: 17,),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20,),
-              SubmitButtonWidget(
-                onTap: (){
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => HomePage(),
-                  ));
-                },
-                placeholder: "LOGIN",
-              ),
-              SizedBox(height: 20,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text("Não tem conta?",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black, fontSize: 17,),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => RegisterPage(),
-                      ));
-                    },
-                    child: Text("Crie uma conta",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.blue, fontSize: 17,),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-*/
-
 import 'package:flutter/material.dart';
 import 'package:wdalivraia/services/clientes_services.dart'; // Certifique-se de ter o método getNoteEmail aqui
 import 'package:wdalivraia/views/home_page.dart';
@@ -208,7 +107,7 @@ class _BottomSheetLoginState extends State<BottomSheetLogin> {
                 InputLabelWidget(
                   type: 1,
                   controller: emailController,
-                  maxLength: 50,
+                  maxLength: 100,
                   minLength: 5,
                   placeholder: "example@gmail.com",
                   label: "Email",
@@ -216,7 +115,7 @@ class _BottomSheetLoginState extends State<BottomSheetLogin> {
                 InputLabelWidget(
                   type: 2,
                   controller: passwordController,
-                  maxLength: 50,
+                  maxLength: 45,
                   minLength: 6,
                   placeholder: "password",
                   label: "Senha",
